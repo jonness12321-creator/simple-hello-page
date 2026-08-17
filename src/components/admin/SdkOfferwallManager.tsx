@@ -145,7 +145,7 @@ export function SdkOfferwallManager() {
   return (
     <section className="grid gap-3">
       <div className="flex items-center justify-between">
-        <SectionTitle title="SDK Offerwalls" />
+        <SectionTitle>SDK Offerwalls</SectionTitle>
         <Button size="sm" onClick={() => setForm({ ...EMPTY })}>
           New provider
         </Button>
