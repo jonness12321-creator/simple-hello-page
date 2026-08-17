@@ -429,6 +429,197 @@ export type Database = {
         }
         Relationships: []
       }
+      sdk_offerwall_conversions: {
+        Row: {
+          created_at: string
+          currency_amount: number
+          id: string
+          processed_at: string | null
+          provider_id: string
+          provider_offer_id: string | null
+          provider_transaction_id: string
+          provider_user_ref: string | null
+          raw_payload: Json
+          received_at: string
+          reject_reason: string | null
+          reward_amount: number
+          signature_valid: boolean | null
+          source_ip: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+          wallet_transaction_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          currency_amount?: number
+          id?: string
+          processed_at?: string | null
+          provider_id: string
+          provider_offer_id?: string | null
+          provider_transaction_id: string
+          provider_user_ref?: string | null
+          raw_payload?: Json
+          received_at?: string
+          reject_reason?: string | null
+          reward_amount?: number
+          signature_valid?: boolean | null
+          source_ip?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          wallet_transaction_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          currency_amount?: number
+          id?: string
+          processed_at?: string | null
+          provider_id?: string
+          provider_offer_id?: string | null
+          provider_transaction_id?: string
+          provider_user_ref?: string | null
+          raw_payload?: Json
+          received_at?: string
+          reject_reason?: string | null
+          reward_amount?: number
+          signature_valid?: boolean | null
+          source_ip?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+          wallet_transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sdk_offerwall_conversions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "sdk_offerwall_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sdk_offerwall_providers: {
+        Row: {
+          app_id: string | null
+          created_at: string
+          currency_name: string
+          currency_per_usd: number
+          dedupe_strategy: string
+          dedupe_window_hours: number
+          display_order: number
+          enabled: boolean
+          extra_config: Json
+          id: string
+          integration_type: string
+          logo_url: string | null
+          max_reward: number | null
+          metadata: Json
+          min_reward: number
+          name: string
+          notes: string
+          placement_id: string | null
+          platforms: string[]
+          postback_auth_mode: string
+          postback_ip_allowlist: string[]
+          postback_path: string | null
+          postback_signature_secret_ref: string | null
+          publisher_id: string | null
+          reward_multiplier: number
+          reward_param: string
+          rounding_mode: string
+          sdk_version: string | null
+          secret_refs: Json
+          slug: string
+          status: string
+          tagline: string
+          transaction_id_param: string
+          updated_at: string
+          user_id_param: string
+          user_identity_mode: string
+          user_identity_salt_ref: string | null
+        }
+        Insert: {
+          app_id?: string | null
+          created_at?: string
+          currency_name?: string
+          currency_per_usd?: number
+          dedupe_strategy?: string
+          dedupe_window_hours?: number
+          display_order?: number
+          enabled?: boolean
+          extra_config?: Json
+          id?: string
+          integration_type?: string
+          logo_url?: string | null
+          max_reward?: number | null
+          metadata?: Json
+          min_reward?: number
+          name: string
+          notes?: string
+          placement_id?: string | null
+          platforms?: string[]
+          postback_auth_mode?: string
+          postback_ip_allowlist?: string[]
+          postback_path?: string | null
+          postback_signature_secret_ref?: string | null
+          publisher_id?: string | null
+          reward_multiplier?: number
+          reward_param?: string
+          rounding_mode?: string
+          sdk_version?: string | null
+          secret_refs?: Json
+          slug: string
+          status?: string
+          tagline?: string
+          transaction_id_param?: string
+          updated_at?: string
+          user_id_param?: string
+          user_identity_mode?: string
+          user_identity_salt_ref?: string | null
+        }
+        Update: {
+          app_id?: string | null
+          created_at?: string
+          currency_name?: string
+          currency_per_usd?: number
+          dedupe_strategy?: string
+          dedupe_window_hours?: number
+          display_order?: number
+          enabled?: boolean
+          extra_config?: Json
+          id?: string
+          integration_type?: string
+          logo_url?: string | null
+          max_reward?: number | null
+          metadata?: Json
+          min_reward?: number
+          name?: string
+          notes?: string
+          placement_id?: string | null
+          platforms?: string[]
+          postback_auth_mode?: string
+          postback_ip_allowlist?: string[]
+          postback_path?: string | null
+          postback_signature_secret_ref?: string | null
+          publisher_id?: string | null
+          reward_multiplier?: number
+          reward_param?: string
+          rounding_mode?: string
+          sdk_version?: string | null
+          secret_refs?: Json
+          slug?: string
+          status?: string
+          tagline?: string
+          transaction_id_param?: string
+          updated_at?: string
+          user_id_param?: string
+          user_identity_mode?: string
+          user_identity_salt_ref?: string | null
+        }
+        Relationships: []
+      }
       support_tickets: {
         Row: {
           admin_response: string | null
