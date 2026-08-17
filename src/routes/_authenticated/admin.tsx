@@ -21,6 +21,7 @@ import {
 } from "@/lib/coinquest.functions";
 import { OffersManager } from "@/components/admin/OffersManager";
 import { TasksManager } from "@/components/admin/TasksManager";
+import { SdkOfferwallManager } from "@/components/admin/SdkOfferwallManager";
 import {
   adminDashboard,
   listOfferProviders,
@@ -49,7 +50,8 @@ type TabKey =
   | "claims"
   | "tickets"
   | "users"
-  | "providers";
+  | "providers"
+  | "sdk-offerwalls";
 
 function AdminPage() {
   const { isAdmin } = useAuth();
@@ -208,6 +210,7 @@ function AdminPage() {
             ["tickets", `Tickets (${openTickets.length})`],
             ["users", "Users"],
             ["providers", "Networks"],
+            ["sdk-offerwalls", "SDK Offerwalls"],
           ] as [TabKey, string][]
         ).map(([key, label]) => (
           <Button
@@ -523,6 +526,8 @@ function AdminPage() {
           </ul>
         </>
       )}
+
+      {tab === "sdk-offerwalls" && <SdkOfferwallManager />}
 
       {tab === "providers" && (
         <>
