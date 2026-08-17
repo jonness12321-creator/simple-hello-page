@@ -11,6 +11,10 @@ export type SdkDedupeStrategy = "transaction_id" | "transaction_id_and_user" | "
 export type SdkPostbackAuthMode = "none" | "signature" | "ip_allowlist" | "signature_and_ip";
 export type SdkConversionStatus = "pending" | "credited" | "rejected" | "duplicate" | "reversed";
 
+/** JSON-serializable config blob (safe to cross the server-fn boundary). */
+export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
+export type JsonObject = { [key: string]: Json };
+
 /** Full admin-facing provider configuration row. */
 export type SdkOfferwallProvider = {
   id: string;
@@ -26,9 +30,9 @@ export type SdkOfferwallProvider = {
   app_id: string | null;
   placement_id: string | null;
   publisher_id: string | null;
-  extra_config: Record<string, unknown>;
+  extra_config: JsonObject;
   /** Names of secrets (never the values themselves). */
-  secret_refs: Record<string, unknown>;
+  secret_refs: JsonObject;
   currency_name: string;
   currency_per_usd: number;
   reward_multiplier: number;
@@ -48,7 +52,7 @@ export type SdkOfferwallProvider = {
   dedupe_window_hours: number;
   status: string;
   notes: string;
-  metadata: Record<string, unknown>;
+  metadata: JsonObject;
   created_at: string;
   updated_at: string;
 };
@@ -80,8 +84,8 @@ export type SdkProviderInput = {
   appId?: string | null | undefined;
   placementId?: string | null | undefined;
   publisherId?: string | null | undefined;
-  extraConfig: Record<string, unknown>;
-  secretRefs: Record<string, unknown>;
+  extraConfig: JsonObject;
+  secretRefs: JsonObject;
   currencyName: string;
   currencyPerUsd: number;
   rewardMultiplier: number;
@@ -101,7 +105,7 @@ export type SdkProviderInput = {
   dedupeWindowHours: number;
   status: SdkProviderStatus;
   notes: string;
-  metadata: Record<string, unknown>;
+  metadata: JsonObject;
 };
 
 /**
@@ -117,11 +121,11 @@ export type SdkOfferwallAdapter = {
   buildLaunchPayload?: (
     provider: SdkOfferwallProvider,
     identity: { userRef: string },
-  ) => Record<string, unknown>;
+  ) => JsonObject;
   /** Normalize an inbound postback into our common conversion shape. */
   parsePostback?: (
     provider: SdkOfferwallProvider,
-    payload: Record<string, unknown>,
+    payload: JsonObject,
   ) => NormalizedSdkConversion;
   /** Verify signature / caller authenticity for a postback. */
   verifyPostback?: (
@@ -135,7 +139,7 @@ export type NormalizedSdkConversion = {
   providerUserRef: string;
   providerOfferId?: string | undefined;
   currencyAmount: number;
-  raw: Record<string, unknown>;
+  raw: JsonObject;
 };
 
 /** Provider currency -> USD wallet amount. Pure helper; no wallet writes here. */

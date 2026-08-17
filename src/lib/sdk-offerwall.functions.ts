@@ -26,8 +26,8 @@ const providerSchema = z.object({
   appId: z.string().trim().max(120).nullable().optional(),
   placementId: z.string().trim().max(120).nullable().optional(),
   publisherId: z.string().trim().max(120).nullable().optional(),
-  extraConfig: z.record(z.string(), z.unknown()).default({}),
-  secretRefs: z.record(z.string(), z.unknown()).default({}),
+  extraConfig: z.record(z.string(), z.any()).default({}),
+  secretRefs: z.record(z.string(), z.any()).default({}),
   currencyName: z.string().trim().min(1).max(30).default("coins"),
   currencyPerUsd: z.number().positive().max(1_000_000).default(100),
   rewardMultiplier: z.number().min(0).max(100).default(1),
@@ -53,7 +53,7 @@ const providerSchema = z.object({
   dedupeWindowHours: z.number().int().min(1).max(8760).default(720),
   status: z.enum(["draft", "configured", "testing", "live", "disabled"]).default("draft"),
   notes: z.string().trim().max(1000).default(""),
-  metadata: z.record(z.string(), z.unknown()).default({}),
+  metadata: z.record(z.string(), z.any()).default({}),
 });
 
 /** Signed-in users: enabled providers only, safe fields. */
