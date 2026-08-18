@@ -229,7 +229,7 @@ async function creditReferralMilestone(
 }
 
 /** Looks up the referral row for a referred user and credits a milestone once. */
-async function payReferralMilestone(
+export async function payReferralMilestone(
   referredUserId: string,
   milestone: ReferralMilestone,
   description: string,

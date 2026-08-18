@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      automation_logs: {
+        Row: {
+          context: Json
+          created_at: string
+          event_type: string
+          id: string
+          message: string
+          provider_id: string | null
+          reference_id: string | null
+          source: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          context?: Json
+          created_at?: string
+          event_type: string
+          id?: string
+          message?: string
+          provider_id?: string | null
+          reference_id?: string | null
+          source?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          context?: Json
+          created_at?: string
+          event_type?: string
+          id?: string
+          message?: string
+          provider_id?: string | null
+          reference_id?: string | null
+          source?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_logs_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "sdk_offerwall_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       faq: {
         Row: {
           answer: string
