@@ -22,6 +22,7 @@ import {
 import { OffersManager } from "@/components/admin/OffersManager";
 import { TasksManager } from "@/components/admin/TasksManager";
 import { SdkOfferwallManager } from "@/components/admin/SdkOfferwallManager";
+import { AutomationPanel } from "@/components/admin/AutomationPanel";
 import {
   adminDashboard,
   listOfferProviders,
@@ -51,7 +52,8 @@ type TabKey =
   | "tickets"
   | "users"
   | "providers"
-  | "sdk-offerwalls";
+  | "sdk-offerwalls"
+  | "automation";
 
 function AdminPage() {
   const { isAdmin } = useAuth();
@@ -211,6 +213,7 @@ function AdminPage() {
             ["users", "Users"],
             ["providers", "Networks"],
             ["sdk-offerwalls", "SDK Offerwalls"],
+            ["automation", "Automation"],
           ] as [TabKey, string][]
         ).map(([key, label]) => (
           <Button
@@ -528,6 +531,8 @@ function AdminPage() {
       )}
 
       {tab === "sdk-offerwalls" && <SdkOfferwallManager />}
+
+      {tab === "automation" && <AutomationPanel />}
 
       {tab === "providers" && (
         <>
