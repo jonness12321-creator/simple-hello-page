@@ -25,6 +25,7 @@ import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedTaskRouteImport } from './routes/_authenticated/task'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as LegalTermsRouteImport } from './routes/legal/terms'
+import { Route as ApiPublicOfferwallSlugRouteImport } from './routes/api/public/offerwall/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -106,6 +107,11 @@ const LegalTermsRoute = LegalTermsRouteImport.update({
   path: '/legal/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicOfferwallSlugRoute = ApiPublicOfferwallSlugRouteImport.update({
+  id: '/api/public/offerwall/$slug',
+  path: '/api/public/offerwall/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/task': typeof AuthenticatedTaskRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/api/public/offerwall/$slug': typeof ApiPublicOfferwallSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/task': typeof AuthenticatedTaskRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/api/public/offerwall/$slug': typeof ApiPublicOfferwallSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/_authenticated/task': typeof AuthenticatedTaskRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/api/public/offerwall/$slug': typeof ApiPublicOfferwallSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/task'
     | '/wallet'
     | '/legal/terms'
+    | '/api/public/offerwall/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/task'
     | '/wallet'
     | '/legal/terms'
+    | '/api/public/offerwall/$slug'
   id:
     | '__root__'
     | '/'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/_authenticated/task'
     | '/_authenticated/wallet'
     | '/legal/terms'
+    | '/api/public/offerwall/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -220,6 +232,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   LegalTermsRoute: typeof LegalTermsRoute
+  ApiPublicOfferwallSlugRoute: typeof ApiPublicOfferwallSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -336,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalTermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/offerwall/$slug': {
+      id: '/api/public/offerwall/$slug'
+      path: '/api/public/offerwall/$slug'
+      fullPath: '/api/public/offerwall/$slug'
+      preLoaderRoute: typeof ApiPublicOfferwallSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -377,6 +397,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   LegalTermsRoute: LegalTermsRoute,
+  ApiPublicOfferwallSlugRoute: ApiPublicOfferwallSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
