@@ -16,20 +16,52 @@ export const Route = createFileRoute("/auth")({
       { title: "Sign in — CashGPT" },
       { name: "description", content: "Sign in or create your CashGPT account to start earning." },
       { property: "og:title", content: "Sign in — CashGPT" },
-      { property: "og:description", content: "Sign in or create your CashGPT account to start earning." },
+      {
+        property: "og:description",
+        content: "Sign in or create your CashGPT account to start earning.",
+      },
     ],
   }),
   component: AuthPage,
 });
 
-const schema = z.object({
+const emailSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
   password: z.string().min(8, "Use at least 8 characters").max(72),
 });
 
+const phoneSchema = z
+  .string()
+  .trim()
+  .regex(/^\+[1-9]\d{7,14}$/, "Use the international format, e.g. +919000000000");
+
+type Channel = "email" | "phone";
+type EmailMode = "signin" | "signup" | "forgot";
+
+function TabButton({
+  active,
+  children,
+  onClick,
+}: {
+  active: boolean;
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
+        active ? "bg-card text-foreground shadow-soft" : "text-muted-foreground"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
 function AuthPage() {
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [busy, setBusy] = useState(false);
+  const [channel, setChannel] = useState<Channel>("email");
   const { session } = useAuth();
   const navigate = useNavigate();
 
@@ -54,65 +86,230 @@ function AuthPage() {
           </p>
         </div>
 
-        <form
-          className="surface-card mt-6 space-y-3 p-5"
-          onSubmit={async (event) => {
-            event.preventDefault();
-            const form = new FormData(event.currentTarget);
-            const parsed = schema.safeParse({
-              email: String(form.get("email")),
-              password: String(form.get("password")),
-            });
-            if (!parsed.success) {
-              toast.error(parsed.error.issues[0]?.message ?? "Check your details.");
-              return;
-            }
-            setBusy(true);
-            try {
-              if (mode === "signup") {
-                const { error } = await supabase.auth.signUp({
-                  ...parsed.data,
-                  options: { emailRedirectTo: window.location.origin },
-                });
-                if (error) throw error;
-                toast.success("Check your email to confirm your account.");
-              } else {
-                const { error } = await supabase.auth.signInWithPassword(parsed.data);
-                if (error) throw error;
-              }
-            } catch (error) {
-              toast.error((error as Error).message);
-            } finally {
-              setBusy(false);
-            }
-          }}
-        >
-          <div className="space-y-1.5">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" autoComplete="email" maxLength={255} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete={mode === "signup" ? "new-password" : "current-password"}
-              maxLength={72}
-            />
-          </div>
-          <Button type="submit" variant="jade" className="w-full" disabled={busy}>
-            {mode === "signup" ? "Create account" : "Sign in"}
-          </Button>
-          <button
-            type="button"
-            className="w-full pt-1 text-xs font-semibold text-primary"
-            onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-          >
-            {mode === "signup" ? "Already have an account? Sign in" : "New here? Create an account"}
-          </button>
-        </form>
+        <div className="mt-6 flex gap-1 rounded-2xl bg-background-alt p-1">
+          <TabButton active={channel === "email"} onClick={() => setChannel("email")}>
+            Email
+          </TabButton>
+          <TabButton active={channel === "phone"} onClick={() => setChannel("phone")}>
+            Phone OTP
+          </TabButton>
+        </div>
+
+        {channel === "email" ? <EmailForm /> : <PhoneForm />}
       </div>
     </main>
+  );
+}
+
+function EmailForm() {
+  const [mode, setMode] = useState<EmailMode>("signin");
+  const [busy, setBusy] = useState(false);
+
+  if (mode === "forgot") {
+    return (
+      <form
+        className="surface-card mt-4 space-y-3 p-5"
+        onSubmit={async (event) => {
+          event.preventDefault();
+          const form = new FormData(event.currentTarget);
+          const email = z.string().trim().email().max(255).safeParse(String(form.get("email")));
+          if (!email.success) {
+            toast.error("Enter a valid email.");
+            return;
+          }
+          setBusy(true);
+          try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email.data, {
+              redirectTo: `${window.location.origin}/reset-password`,
+            });
+            if (error) throw error;
+            toast.success("Reset link sent — check your inbox.");
+            setMode("signin");
+          } catch (error) {
+            toast.error((error as Error).message);
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        <div className="space-y-1.5">
+          <Label htmlFor="reset-email">Email</Label>
+          <Input id="reset-email" name="email" type="email" autoComplete="email" maxLength={255} />
+          <p className="text-xs text-muted-foreground">
+            We'll email you a link to choose a new password.
+          </p>
+        </div>
+        <Button type="submit" variant="jade" className="w-full" disabled={busy}>
+          {busy ? "Sending…" : "Send reset link"}
+        </Button>
+        <button
+          type="button"
+          className="w-full pt-1 text-xs font-semibold text-primary"
+          onClick={() => setMode("signin")}
+        >
+          Back to sign in
+        </button>
+      </form>
+    );
+  }
+
+  return (
+    <form
+      className="surface-card mt-4 space-y-3 p-5"
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const form = new FormData(event.currentTarget);
+        const parsed = emailSchema.safeParse({
+          email: String(form.get("email")),
+          password: String(form.get("password")),
+        });
+        if (!parsed.success) {
+          toast.error(parsed.error.issues[0]?.message ?? "Check your details.");
+          return;
+        }
+        setBusy(true);
+        try {
+          if (mode === "signup") {
+            const { error } = await supabase.auth.signUp({
+              ...parsed.data,
+              options: { emailRedirectTo: window.location.origin },
+            });
+            if (error) throw error;
+            toast.success("Check your email to confirm your account.");
+          } else {
+            const { error } = await supabase.auth.signInWithPassword(parsed.data);
+            if (error) throw error;
+          }
+        } catch (error) {
+          toast.error((error as Error).message);
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      <div className="space-y-1.5">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" name="email" type="email" autoComplete="email" maxLength={255} />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete={mode === "signup" ? "new-password" : "current-password"}
+          maxLength={72}
+        />
+      </div>
+      <Button type="submit" variant="jade" className="w-full" disabled={busy}>
+        {mode === "signup" ? "Create account" : "Sign in"}
+      </Button>
+      {mode === "signin" && (
+        <button
+          type="button"
+          className="w-full text-xs font-semibold text-muted-foreground"
+          onClick={() => setMode("forgot")}
+        >
+          Forgot password?
+        </button>
+      )}
+      <button
+        type="button"
+        className="w-full pt-1 text-xs font-semibold text-primary"
+        onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
+      >
+        {mode === "signup" ? "Already have an account? Sign in" : "New here? Create an account"}
+      </button>
+    </form>
+  );
+}
+
+function PhoneForm() {
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  return (
+    <form
+      className="surface-card mt-4 space-y-3 p-5"
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const parsed = phoneSchema.safeParse(phone);
+        if (!parsed.success) {
+          toast.error(parsed.error.issues[0]?.message ?? "Enter a valid phone number.");
+          return;
+        }
+        setBusy(true);
+        try {
+          if (!sent) {
+            const { error } = await supabase.auth.signInWithOtp({ phone: parsed.data });
+            if (error) throw error;
+            setSent(true);
+            toast.success("We sent you a 6-digit code.");
+          } else {
+            const { error } = await supabase.auth.verifyOtp({
+              phone: parsed.data,
+              token: code.trim(),
+              type: "sms",
+            });
+            if (error) throw error;
+          }
+        } catch (error) {
+          toast.error((error as Error).message);
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      <div className="space-y-1.5">
+        <Label htmlFor="phone">Phone number</Label>
+        <Input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          maxLength={20}
+          placeholder="+919000000000"
+          value={phone}
+          disabled={sent}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </div>
+      {sent && (
+        <div className="space-y-1.5">
+          <Label htmlFor="otp">Verification code</Label>
+          <Input
+            id="otp"
+            name="otp"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            maxLength={8}
+            placeholder="123456"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+        </div>
+      )}
+      <Button type="submit" variant="jade" className="w-full" disabled={busy}>
+        {busy ? "Please wait…" : sent ? "Verify & continue" : "Send code"}
+      </Button>
+      {sent && (
+        <button
+          type="button"
+          className="w-full pt-1 text-xs font-semibold text-primary"
+          onClick={() => {
+            setSent(false);
+            setCode("");
+          }}
+        >
+          Use a different number
+        </button>
+      )}
+      <p className="pt-1 text-center text-xs text-muted-foreground">
+        Signing in with a phone number creates your account automatically.
+      </p>
+    </form>
   );
 }
