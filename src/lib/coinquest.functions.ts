@@ -31,9 +31,11 @@ export const completeOnboarding = createServerFn({ method: "POST" })
         name: z.string().trim().min(2).max(80),
         phone: z.string().trim().max(30).optional(),
         deviceId: z.string().trim().max(64).optional(),
+        referralCode: z.string().trim().max(20).optional(),
       })
       .parse(input),
   )
+
   .handler(async ({ data, context }) => {
     const { completeOnboardingImpl } = await import("./coinquest.server");
     return completeOnboardingImpl(context.userId, data);
