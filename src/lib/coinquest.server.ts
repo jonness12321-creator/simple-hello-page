@@ -133,7 +133,12 @@ export async function ensureProfileImpl(input: {
 
 export async function completeOnboardingImpl(
   userId: string,
-  values: { name: string; phone?: string | undefined; deviceId?: string | undefined },
+  values: {
+    name: string;
+    phone?: string | undefined;
+    deviceId?: string | undefined;
+    referralCode?: string | undefined;
+  },
 ) {
   const patch: { name: string; onboarded: boolean; phone?: string; device_id?: string } = {
     name: values.name,
@@ -148,8 +153,81 @@ export async function completeOnboardingImpl(
     .select("*")
     .single();
   if (error) throw new Error("Could not save your details.");
+
+  if (values.referralCode) {
+    await attachReferralImpl(userId, values.referralCode);
+    const refreshed = await supabaseAdmin
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
+    if (refreshed.data) return refreshed.data;
+  }
   return data;
 }
+
+/**
+ * Links a manually entered referral code to a profile that has no referrer yet.
+ * Idempotent and self-referral safe; silently no-ops on invalid codes.
+ */
+export async function attachReferralImpl(userId: string, rawCode: string) {
+  const code = rawCode.trim().toUpperCase().slice(0, 20);
+  if (!code) return { ok: false as const, reason: "empty" };
+
+  const me = await supabaseAdmin
+    .from("profiles")
+    .select("id, referred_by, referral_code")
+    .eq("id", userId)
+    .maybeSingle();
+  if (!me.data || me.data.referred_by) return { ok: false as const, reason: "already" };
+  if (me.data.referral_code === code) return { ok: false as const, reason: "self" };
+
+  const referrer = await supabaseAdmin
+    .from("profiles")
+    .select("id")
+    .eq("referral_code", code)
+    .maybeSingle();
+  if (!referrer.data) return { ok: false as const, reason: "invalid" };
+
+  const existing = await supabaseAdmin
+    .from("referrals")
+    .select("id")
+    .eq("referred_id", userId)
+    .maybeSingle();
+  if (existing.data) return { ok: false as const, reason: "already" };
+
+  await supabaseAdmin.from("profiles").update({ referred_by: code }).eq("id", userId);
+
+  const referral = await supabaseAdmin
+    .from("referrals")
+    .insert({
+      referrer_id: referrer.data.id,
+      referred_id: userId,
+      code,
+      bonus_amount: 0,
+      status: "pending",
+    })
+    .select("*")
+    .single();
+
+  if (referral.data) {
+    await notify(
+      referrer.data.id,
+      "New referral joined",
+      "A friend signed up with your code.",
+      "referral",
+    );
+    await creditReferralMilestone(referral.data.id, "signup", "Referral: friend signed up");
+    const { recordTaskEvent } = await import("./tasks/engine.server");
+    await recordTaskEvent({
+      userId: referrer.data.id,
+      eventType: "referral",
+      eventKey: referral.data.id,
+    });
+  }
+  return { ok: true as const };
+}
+
 
 type ReferralMilestone = "signup" | "earning" | "withdrawal";
 
