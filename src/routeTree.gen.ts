@@ -24,6 +24,8 @@ import { Route as AuthenticatedReferRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
 import { Route as AuthenticatedTaskRouteImport } from './routes/_authenticated/task'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
+import { Route as LegalPayoutsRouteImport } from './routes/legal/payouts'
+import { Route as LegalPrivacyRouteImport } from './routes/legal/privacy'
 import { Route as LegalTermsRouteImport } from './routes/legal/terms'
 import { Route as ApiPublicOfferwallSlugRouteImport } from './routes/api/public/offerwall/$slug'
 
@@ -102,6 +104,16 @@ const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
   path: '/wallet',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const LegalPayoutsRoute = LegalPayoutsRouteImport.update({
+  id: '/legal/payouts',
+  path: '/legal/payouts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LegalTermsRoute = LegalTermsRouteImport.update({
   id: '/legal/terms',
   path: '/legal/terms',
@@ -128,6 +140,8 @@ export interface FileRoutesByFullPath {
   '/support': typeof AuthenticatedSupportRoute
   '/task': typeof AuthenticatedTaskRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/legal/payouts': typeof LegalPayoutsRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/offerwall/$slug': typeof ApiPublicOfferwallSlugRoute
 }
@@ -146,6 +160,8 @@ export interface FileRoutesByTo {
   '/support': typeof AuthenticatedSupportRoute
   '/task': typeof AuthenticatedTaskRoute
   '/wallet': typeof AuthenticatedWalletRoute
+  '/legal/payouts': typeof LegalPayoutsRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/offerwall/$slug': typeof ApiPublicOfferwallSlugRoute
 }
@@ -166,6 +182,8 @@ export interface FileRoutesById {
   '/_authenticated/support': typeof AuthenticatedSupportRoute
   '/_authenticated/task': typeof AuthenticatedTaskRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
+  '/legal/payouts': typeof LegalPayoutsRoute
+  '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/offerwall/$slug': typeof ApiPublicOfferwallSlugRoute
 }
@@ -186,6 +204,8 @@ export interface FileRouteTypes {
     | '/support'
     | '/task'
     | '/wallet'
+    | '/legal/payouts'
+    | '/legal/privacy'
     | '/legal/terms'
     | '/api/public/offerwall/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -204,6 +224,8 @@ export interface FileRouteTypes {
     | '/support'
     | '/task'
     | '/wallet'
+    | '/legal/payouts'
+    | '/legal/privacy'
     | '/legal/terms'
     | '/api/public/offerwall/$slug'
   id:
@@ -223,6 +245,8 @@ export interface FileRouteTypes {
     | '/_authenticated/support'
     | '/_authenticated/task'
     | '/_authenticated/wallet'
+    | '/legal/payouts'
+    | '/legal/privacy'
     | '/legal/terms'
     | '/api/public/offerwall/$slug'
   fileRoutesById: FileRoutesById
@@ -231,6 +255,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  LegalPayoutsRoute: typeof LegalPayoutsRoute
+  LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   ApiPublicOfferwallSlugRoute: typeof ApiPublicOfferwallSlugRoute
 }
@@ -342,6 +368,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWalletRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/legal/payouts': {
+      id: '/legal/payouts'
+      path: '/legal/payouts'
+      fullPath: '/legal/payouts'
+      preLoaderRoute: typeof LegalPayoutsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/legal/terms': {
       id: '/legal/terms'
       path: '/legal/terms'
@@ -396,6 +436,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  LegalPayoutsRoute: LegalPayoutsRoute,
+  LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   ApiPublicOfferwallSlugRoute: ApiPublicOfferwallSlugRoute,
 }
