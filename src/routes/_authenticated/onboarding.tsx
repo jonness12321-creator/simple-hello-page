@@ -34,10 +34,17 @@ function OnboardingPage() {
   const save = useServerFn(completeOnboarding);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [referral, setReferral] = useState("");
 
   useEffect(() => {
     if (profile?.onboarded) void navigate({ to: "/home", replace: true });
   }, [profile?.onboarded, navigate]);
+
+  // Pre-fill from a ?ref= link captured earlier; the user can still edit it.
+  useEffect(() => {
+    const stored = window.localStorage.getItem("coinquest.ref");
+    if (stored) setReferral(stored);
+  }, []);
 
   const mutation = useMutation({
     mutationFn: async () =>
@@ -45,6 +52,7 @@ function OnboardingPage() {
         data: {
           name: name.trim(),
           ...(phone.trim() ? { phone: phone.trim() } : {}),
+          ...(referral.trim() ? { referralCode: referral.trim().toUpperCase() } : {}),
           deviceId: getDeviceId(),
         },
       }),
@@ -96,6 +104,17 @@ function OnboardingPage() {
             inputMode="tel"
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+91 90000 00000"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="referral">Referral code (optional)</Label>
+          <Input
+            id="referral"
+            value={referral}
+            maxLength={20}
+            autoCapitalize="characters"
+            onChange={(e) => setReferral(e.target.value.toUpperCase())}
+            placeholder="FRIEND123"
           />
         </div>
         <Button type="submit" variant="jade" className="w-full" disabled={mutation.isPending}>
