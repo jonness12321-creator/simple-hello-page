@@ -40,7 +40,7 @@ function OnboardingPage() {
     if (profile?.onboarded) void navigate({ to: "/home", replace: true });
   }, [profile?.onboarded, navigate]);
 
-  // Pre-fill from a ?ref= link captured earlier; the user can still edit it.
+  // Referral code is captured on the /auth signup form and stored here.
   useEffect(() => {
     const stored = window.localStorage.getItem("coinquest.ref");
     if (stored) setReferral(stored);
@@ -104,17 +104,6 @@ function OnboardingPage() {
             inputMode="tel"
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+91 90000 00000"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="referral">Referral code (optional)</Label>
-          <Input
-            id="referral"
-            value={referral}
-            maxLength={20}
-            autoCapitalize="characters"
-            onChange={(e) => setReferral(e.target.value.toUpperCase())}
-            placeholder="FRIEND123"
           />
         </div>
         <Button type="submit" variant="jade" className="w-full" disabled={mutation.isPending}>
