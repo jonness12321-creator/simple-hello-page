@@ -106,6 +106,17 @@ function OnboardingPage() {
             placeholder="+91 90000 00000"
           />
         </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="referral">Referral code (optional)</Label>
+          <Input
+            id="referral"
+            value={referral}
+            maxLength={20}
+            autoCapitalize="characters"
+            onChange={(e) => setReferral(e.target.value.toUpperCase())}
+            placeholder="FRIEND123"
+          />
+        </div>
         <Button type="submit" variant="jade" className="w-full" disabled={mutation.isPending}>
           {mutation.isPending ? "Saving…" : "Start earning"}
         </Button>
