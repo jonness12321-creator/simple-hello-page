@@ -13,15 +13,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");
 
   // Read after mount only: touching localStorage during render mismatches SSR.
+  // Default is always "light" unless the user explicitly saved "dark".
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    const next: Theme =
-      stored === "dark" || stored === "light"
-        ? stored
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-    setThemeState(next);
+    setThemeState(stored === "dark" ? "dark" : "light");
   }, []);
 
   useEffect(() => {
