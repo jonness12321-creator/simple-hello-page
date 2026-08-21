@@ -34,10 +34,17 @@ function OnboardingPage() {
   const save = useServerFn(completeOnboarding);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [referral, setReferral] = useState("");
 
   useEffect(() => {
     if (profile?.onboarded) void navigate({ to: "/home", replace: true });
   }, [profile?.onboarded, navigate]);
+
+  // Pre-fill from a ?ref= link captured earlier; the user can still edit it.
+  useEffect(() => {
+    const stored = window.localStorage.getItem("coinquest.ref");
+    if (stored) setReferral(stored);
+  }, []);
 
   const mutation = useMutation({
     mutationFn: async () =>
@@ -45,6 +52,7 @@ function OnboardingPage() {
         data: {
           name: name.trim(),
           ...(phone.trim() ? { phone: phone.trim() } : {}),
+          ...(referral.trim() ? { referralCode: referral.trim().toUpperCase() } : {}),
           deviceId: getDeviceId(),
         },
       }),
