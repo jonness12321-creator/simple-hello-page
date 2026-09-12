@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { FeaturedOffers } from "@/components/FeaturedOffers";
 import { OfferwallSlot } from "@/components/OfferwallSlot";
-import { SectionTitle } from "@/components/States";
+import { SectionHeading, SectionTitle } from "@/components/States";
 
 export const Route = createFileRoute("/_authenticated/offers")({
   head: () => ({
@@ -20,10 +20,11 @@ export const Route = createFileRoute("/_authenticated/offers")({
 function OffersPage() {
   return (
     <AppShell subtitle="Offers">
-      <h1 className="mt-2 text-2xl">Offers</h1>
-      <p className="text-sm text-muted-foreground">Complete partner offers for bigger payouts.</p>
+      <SectionHeading icon="offers" description="Complete partner offers for bigger payouts.">
+        Offers
+      </SectionHeading>
 
-      <SectionTitle>Featured Offers</SectionTitle>
+      <SectionTitle icon="featured">Featured Offers</SectionTitle>
       <FeaturedOffers limit={9} />
       <div className="mt-3 flex justify-center">
         <Link
@@ -34,7 +35,7 @@ function OffersPage() {
         </Link>
       </div>
 
-      <SectionTitle>Offerwall</SectionTitle>
+      <SectionTitle icon="offerwall">Offerwall</SectionTitle>
       <OfferwallSlot limit={6} />
       <div className="mt-3 flex justify-center">
         <Link

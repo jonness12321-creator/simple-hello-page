@@ -4,7 +4,7 @@ import { LifeBuoy } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
-import { EmptyState, SectionTitle } from "@/components/States";
+import { EmptyState, SectionHeading, SectionTitle } from "@/components/States";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,7 +71,7 @@ function SupportPage() {
 
   return (
     <AppShell subtitle="Support">
-      <h1 className="mt-2 text-2xl">Help centre</h1>
+      <SectionHeading icon="support">Help centre</SectionHeading>
 
       <SectionTitle>FAQ</SectionTitle>
       <div className="surface-card px-4">

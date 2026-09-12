@@ -5,7 +5,7 @@ import { CheckCircle2, ListChecks, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
-import { EmptyState, ErrorState } from "@/components/States";
+import { EmptyState, ErrorState, SectionHeading } from "@/components/States";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -57,8 +57,11 @@ function TaskPage() {
 
   return (
     <AppShell subtitle="Tasks">
-      <h1 className="mt-2 text-2xl">Your tasks</h1>
-      <p className="mb-4 text-sm text-muted-foreground">Work through the list to unlock rewards.</p>
+      <div className="mb-4">
+        <SectionHeading icon="task" description="Work through the list to unlock rewards.">
+          Your tasks
+        </SectionHeading>
+      </div>
 
       {tasks.isLoading ? (
         <div className="space-y-3">
