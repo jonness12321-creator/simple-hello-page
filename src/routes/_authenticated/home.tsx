@@ -59,10 +59,10 @@ function HomePage() {
         ]}
       />
 
-      <SectionTitle>Starter Quests</SectionTitle>
+      <SectionTitle icon="home">Starter Quests</SectionTitle>
       <StarterQuests />
 
-      <SectionTitle>Featured Offers</SectionTitle>
+      <SectionTitle icon="featured">Featured Offers</SectionTitle>
       <FeaturedOffers limit={9} />
       <div className="mt-3 flex justify-center">
         <Link
@@ -73,7 +73,7 @@ function HomePage() {
         </Link>
       </div>
 
-      <SectionTitle>
+      <SectionTitle icon="offerwall">
         <span className="flex items-center gap-2">
           Offerwall <Sparkles className="size-4 text-gold-dark" />
         </span>
