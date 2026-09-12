@@ -1,6 +1,7 @@
 import { Inbox, WifiOff } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { AppIcon, type AppIconName } from "@/components/AppIcon";
 import { Button } from "@/components/ui/button";
 
 export function EmptyState({
@@ -40,11 +41,42 @@ export function ErrorState({ onRetry }: { onRetry: () => void }) {
   );
 }
 
-export function SectionTitle({ children, action }: { children: React.ReactNode; action?: React.ReactNode }) {
+export function SectionTitle({
+  children,
+  action,
+  icon,
+}: {
+  children: React.ReactNode;
+  action?: React.ReactNode;
+  icon?: AppIconName;
+}) {
   return (
     <div className="mb-3 mt-6 flex items-end justify-between gap-3">
-      <h2 className="text-lg">{children}</h2>
+      <h2 className="flex items-center gap-2 text-lg">
+        {icon && <AppIcon name={icon} className="size-7" />}
+        {children}
+      </h2>
       {action}
+    </div>
+  );
+}
+
+export function SectionHeading({
+  children,
+  icon,
+  description,
+}: {
+  children: React.ReactNode;
+  icon: AppIconName;
+  description?: string;
+}) {
+  return (
+    <div className="mt-2 flex items-center gap-3">
+      <AppIcon name={icon} className="size-11" />
+      <div className="min-w-0">
+        <h1 className="text-2xl leading-tight">{children}</h1>
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
+      </div>
     </div>
   );
 }

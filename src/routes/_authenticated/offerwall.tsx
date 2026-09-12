@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { AppShell } from "@/components/AppShell";
 import { OfferwallSlot } from "@/components/OfferwallSlot";
+import { SectionHeading } from "@/components/States";
 
 export const Route = createFileRoute("/_authenticated/offerwall")({
   head: () => ({
@@ -23,7 +24,9 @@ export const Route = createFileRoute("/_authenticated/offerwall")({
 function OfferwallPage() {
   return (
     <AppShell subtitle="Offerwall">
-      <h1 className="mb-3 mt-2 text-2xl">Offerwall</h1>
+      <div className="mb-3">
+        <SectionHeading icon="offerwall">Offerwall</SectionHeading>
+      </div>
       <OfferwallSlot />
       <p className="mt-3 text-center text-xs text-muted-foreground">
         Partner networks activate in the mobile app.

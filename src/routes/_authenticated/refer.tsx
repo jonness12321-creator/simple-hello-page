@@ -4,7 +4,7 @@ import { Copy, Gift, Share2, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
-import { EmptyState, SectionTitle } from "@/components/States";
+import { EmptyState, SectionHeading, SectionTitle } from "@/components/States";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -74,8 +74,9 @@ function ReferPage() {
   return (
     <AppShell subtitle="Refer">
       <header className="mb-4">
-        <h1 className="text-2xl">Refer &amp; Earn</h1>
-        <p className="text-sm text-muted-foreground">Invite friends, get rewarded together</p>
+        <SectionHeading icon="refer" description="Invite friends, get rewarded together">
+          Refer &amp; Earn
+        </SectionHeading>
       </header>
 
       <section className="rounded-3xl bg-jade-gradient p-5 text-primary-foreground shadow-lift">
