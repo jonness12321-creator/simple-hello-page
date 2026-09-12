@@ -1,6 +1,7 @@
 import { Inbox, WifiOff } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { AppIcon, type AppIconName } from "@/components/AppIcon";
 import { Button } from "@/components/ui/button";
 
 export function EmptyState({
