@@ -5,7 +5,7 @@ import {
   ChevronRight,
   FileText,
   KeyRound,
-  LogOut,
+  
   Moon,
   Pencil,
   Receipt,
