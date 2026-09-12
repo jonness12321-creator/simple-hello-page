@@ -18,6 +18,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
+import { AppIcon } from "@/components/AppIcon";
 import { SectionTitle } from "@/components/States";
 import { Button } from "@/components/ui/button";
 import {
@@ -284,7 +285,7 @@ function ProfilePage() {
           navigate({ to: "/auth", replace: true });
         }}
       >
-        <LogOut className="size-4" /> Sign out
+        <AppIcon name="logout" className="size-5" /> Sign out
       </Button>
 
       <Button
